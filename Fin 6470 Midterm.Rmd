@@ -1,0 +1,196 @@
+## Fin 6470 Midterm 
+### Nicholas Lyle
+
+##### Question 1
+
+a) If $F_0$ > $S_0$$e^{rT}$ then there would be an arbitrage opportunity. We would buy the spot price of the given commodity 
+
+b) If $F_0$ < $S_0e^{rT}$ then we would buy the futures contract of the commodity. 
+
+c) If we have a discrete dividends the equation turns into $F_0$ = $S_0e^{rT} \sum_{i=1}^{n}D_{t_i} e^{r(T-t_i)}$ Where:
+  
+  - $D_{t_i}$ = the discrete dividend 
+  - $t_i$ = the period the dividend is received
+  - T = Time to maturity in years
+  
+d) $F_0 = (S_0 + U)e^{rT}$
+    - Where U is the fixed storage cost
+   $F_0 = S_0e^{(r + U)T}$
+    - Where U is the storage cost as a percentage 
+  
+e) The reason that futures prices converge with spot at maturity is because of arbitrage. If the futures price is above the spot as we get closer to maturity the arbitrageurs will short the futures and buy the underlying asset driving the futures price down until $F_0 = S_0$. The opposite is also true if the spot is above the future then arbitrageurs will go long on futures and short the underlying asset. 
+
+f) When pricing a prepaid forward you need to account for the loss of dividend payments so the formula for pricing a prepaid forward should be $F_{0}^{P} = S_0 - D_{t_i}e^{-rT}$. An example of using a prepaid forward would be to defer taxes. So, investors receive cash now and pay taxes when the goods are delivered. 
+
+##### Question 2
+
+````{r}
+
+## Number 1 Augmented Dickey Fuller Test for unit roots
+## A)
+
+raw.data <- read.csv("dairy.csv", header=T)
+head(raw.data)
+
+library(urca)
+
+spotdl = dairy$DL.Nearest.Settlement
+spotbj = dairy$BJ.Nearest.Settlement
+spotdl.diff = diff(spotdl)
+spotbj.diff = diff(spotbj)
+ln.spotdl = log(dairy$DL.Nearest.Settlement)
+ln.spotbj = log(dairy$BJ.Nearest.Settlement)
+ln.spotdl.diff = diff(ln.spotdl)
+ln.spotbj.diff = diff(ln.spotbj)
+
+
+
+adf.spotdl <- ur.df(y=spotdl, type = "drift", selectlags = "BIC")
+summary(adf.spotdl)
+
+adf.spotbj <- ur.df(y=spotbj, type = "drift", selectlags  = "BIC")
+summary(adf.spotbj)
+
+adf.spotdl.diff <- ur.df(y=spotdl.diff, type = "drift", selectlags = "BIC")
+summary(adf.spotdl.diff)
+
+adf.spotbj.diff <- ur.df(y=spotbj.diff, type = "drift", selectlags = "BIC")
+summary(adf.spotbj.diff)
+
+adf.lnsdl <- ur.df(y=ln.spotdl, type = "drift", selectlags = "BIC")
+summary(adf.lnsdl)
+
+adf.lnsbj <- ur.df(y=ln.spotbj, type = "drift", selectlags = "BIC")
+summary(adf.lnsbj)
+
+adf.logsdl.diff <- ur.df(y=ln.spotdl.diff, type = "drift", selectlags = "BIC")
+summary(adf.logsdl.diff)
+
+adf.logsbj.diff <- ur.df(y=ln.spotbj.diff, type = "drift", selectlags = "BIC")
+summary(adf.logsbj.diff)
+
+## B) Plots 
+
+dlspotgraph = plot(spotdl, ylab = "DL Spot Price", xlab = "Time")
+bjspotgraph = plot(spotbj, ylab = "BJ Spot Price", xlab = "Time" )
+lndlspotgraph = plot(ln.spotdl, ylab = "log(DL) Spot Price", xlab = "Time")
+lnbjspotgraph = plot (ln.spotbj, ylab = "Log(BJ Spot Price", xlab = "Time")
+dldiffgraph = plot(spotdl.diff, ylab = "DL Spot Price Difference", xlab = "Time")
+bjdiffgraph = plot(spotbj.diff), ylab = "BJ Spot Price Difference", xlab = "Time")
+lndldiffgraph = plot(ln.spotdl.diff, ylab = "Log(DL) Spot Price Difference" , xlab = "Time")
+lnbjdiffgraph = plot(ln.spotbj.diff, ylab = "Log(BJ) Spot Price Difference", xlab = "Time")
+
+## C Engle Granger 
+
+fit <- lm(ln.spotdl ~ ln.spotbj)
+summary(fit)
+
+resid <- fit$residuals
+plot(resid, type = "b", lwd = 3, col = "blue", main = "Engle-Granger Step 1 Residuals")
+
+adf.resid <- ur.df(resid, type = "drift", selectlags = "BIC")
+summary(adf.resid)
+
+# The Cointegrated vector is [1,1.217] 
+# Looking at the F-stat we can see that we have stationarity at a 95% level. 
+
+# Problem D
+
+vol.dlspot <- sd(ln.spotdl)
+vol.bjspot <- sd(ln.spotbj)
+
+rho <- cor(ln.spotdl, ln.spotbj)
+
+h.star <- rho * (vol.dlspot / vol.bjspot)
+h.star
+
+
+`````
+
+##### Question 3 
+
+````r
+
+alpha_oil = 0.342
+beta_oil = .539
+sigma_oil = .11
+S_oil_0 =.69
+nreps = 45
+b2 = -.01
+b1 = -.02
+
+
+
+ln.S.oil = rep(0,nreps)
+ln.S.oil[1] = log(S_oil_0)
+
+z1 = rnorm(nreps)
+
+for (t in 2:nreps)
+  
+  {
+  
+  ln.S.oil[t] = ln.S.oil[t-1] + alpha_oil * (beta_oil-exp(S_oil_0[t-1])) + z1[t]*sigma_oil
+  
+  ln.S.heat[t] = ln.S.heat[t-1] + alpha_heat * (beta_heat-exp(S_heat[t-1])) + z1[t]*sigma_heat
+
+  b1[t] = alpha_oil * b1[t-1] + beta_oil * S_oil_0[t] + rnorm(1,0)
+  
+  b_heat[t] = alpha_heat * b2[t-1] + beta_heat * S_heat[t] + norm(1,0)
+  
+}
+
+ln.S.oil
+
+
+````
+
+##### Question 4 
+
+Futures and forwards are very similar in how they are defined. There are a few differences to distinguish the two however:
+
+  - First, futures are standardized versions of forwards which are traded on an exchange. Forward contracts are private contracts that are traded over the counter and are privately negotiated 
+  
+  - Secondly, Forwards have much more exposure to counterparty risk. Counterparty risk is when one of the parties in the contract refuses or is unable to uphold their end of the contract, whether that be being able to pay or deliver on the specified commodity traded. Futures markets overcome this risk by the use of clearing houses that act as the counterparty to both ends of the contract. They require that margins be updated at all times and they are marked to market daily. The clearing house ensures that there is effectively no counterparty risk. 
+  
+  - Thirdly, since futures markets are standardized they can be traded in secondary markets. This provides liquidity incase one party needs to shift their obligation to someone else. 
+  
+	The introduction of futures markets happened naturally overtime as the market saw a need for them. Before futures markets farmers would grow their crops and bring them to market without any idea of what demand would be like. This would lead to large amounts of crops going unsold and rotting and then prices of products in the off season would jump because these crops were scarce. This started with grain. in the mid nineteenth century a central grain market was established so that farmers could sell their grain at market or establish forward contracts to sell at a later date. This helped farmers with crop loss and stabilized prices in the off-season. 
+
+##### Question 5
+
+a)		The main empirical findings of the paper are that there exists a co-integrated vector (1 -.083 - .00099) between hog soybean meal and corn future prices. He found that their was stationarity of order 1 [I(1)]. The statistical and econometric tests he used were the Perron unit root test to look for stationarity. This allows a time break correlated with the data.  If there were a historical structural change this would still allow the test to reflect the finding of stationarity. He also uses a three-dimensional vector auto regression equation to find the vector that represents the linear combination showing a long-run equilibrium. I was persuaded because he showed results from ex-post and ex-ante models to prove solidify his point. 
+
+b)	His model looks at the long run equilibrium mean with short run deviations that are mean reverting. This shows that even though there are market inefficiencies the market processes information to pull the prices back to the long run equilibrium.  This is neo-Austrian view because it recognizes a long-run equilibrium (neo-classical) with new information being processed by the market and reflected through the price system (Austrian). 
+
+c)	He uses four respective trigger points, 0.25, 0.5, 0.75, and 1 standard deviation away from the mean. Anytime there is a deviation of this magnitude he would enter into a position opposite of the deviation expecting a return to the mean. I agree with his model however there are some issues with the ability for traders to act on it in real time. I would be hesitant to put money on this strategy because of the large p values in the ex-ante simulation, which is reflective of the traders applying this model in real time inefficiently. 
+
+
+##### Question 6
+
+a) 	Metallgesellschaft’s (MG) hedging strategy was to enter into a contract to deliver oil at a later date and then go and buy a futures contract to “store” the oil then roll this over from month to month.  They used a one to one hedge for this strategy, which does not align with minimum variance hedging and would not be one to one. This is where Pirrong misunderstood MG’s strategy. 
+
+b)	Pirrong looked at MG’s strategy through a minimum variance strategy lens.  This is not what MG’s strategy was trying to do.  They were just rolling over their delivery obligations from month to month trying to lock in the basis with this strategy. Where Pirrong saw them as trying to do minimum variance hedging to reduce their exposure risk. Their hedge ratio would be closer to .5 - .6 if they wanted to engage in minimum variance hedging (see attached graph).
+
+c) Pirrong comments on Bayes’ rule because as prices of the crude oil markets drop so would the optimal minimum variance hedging ratio. This is indicative of Bayes’ rule because it is showing new information being reflected in the prices, which would change your hedge ratio. MG continued to double down as prices dropped which is incorrect for the strategy Pirrong thought they were involved in. 
+
+d) Contango causes problems with this strategy because people that are not involved in synthetic storage want to hold on to their oil for sale at a future date because prices are increasing which makes it harder buy futures and vise versa in backwardation which makes it harder to sell futures. As long as MG was prepared to deal with this issue their strategy would work fine. They also need to be willing to hold strong on their strategy and not pull out too early when they are dealing with contango.  
+
+##### Question 7
+
+	In Hayek’s paper he talks about how price systems are a way for information to be aggregated into a signals. This is the basis of the two papers that we are looking at here. In Orange Juice and Weather they tried use future prices to predict the weather. In the end of the study found that weather only had a small fraction of influence on the future prices. This shows that there are many different forms of information that are influencing this futures market. This is exactly what Hayek  was talking about in his paper. There is an aggregate of knowledge from every person participating in the market. No one person could hold all of the knowledge that feeds into this price system. 
+	The same thing is happening in the paper “Is Sound Just Noise”. We see a non-objective reason for how the market processes information and reverts to equilibrium. In this paper Richard Roll studied the ambient noise levels of a trading pit. As noise levels rose more economic activity was happening and price volatility increased. We currently cannot explain this with econometric models or give computers the ability to process these kinds of price signals. This again reaffirms Hayek’s claim that no one person can attain all the information in a price system. 
+
+##### Question 8
+
+This paper talks about the same things that we have discussed in class. The writers of this paper I would consider to be neo-austrian where they are giving information a quantifiable parameter in the form of a probability. This relates to arbitrage choice theory because it shows that people make decisions on the information they can obtain both publically and privately (personally) instead of making decisions from their incomplete neo-classical model(s).
+	
+##### Question 9
+
+.	There are many derivatives that have come about from the boom of the technological age and globalization such as ad and freight exchanges. We have also seen the emergence of weather derivatives. There are many innovations that could happen in the derivatives markets over the next two decades. Anything can be traded as a derivative as long as there is enough people to trade it and enough deregulation so to not smother its growth. One innovation that has changed derivatives is the amount of computing power that is available to the average person. This has made these markets much more efficient that in the past giving less and less arbitrage opportunities for shorter periods of time because information can flow so quickly and there is a larger aggregation of information into the price of the market. This makes shocks less severe and more quickly revert back to the long run equilibrium more efficiently. 
+
+.		Using derivatives as a form of hedging I could see an emergence of a political futures markets to hedge against the possibility of stronger regulations on a commodity or some other globally traded good. This would act as not only a hedging strategy but also a Bayesian market predictor of the environment of the global trade. The accuracy of these markets would rely on the amount of regulation governments put on this market. 
+
+.		It would be very difficult to have quantitative analysis on this type of market since it would be built around Hayakian beliefs. The information is built around speculation, which is hard to quantify unless there was a pure Bayesian market system to put a probability on the events happening. We have seen small scale markets like this so it could be possible to be able to do this in the future if these markets grew big enough to have a good informational foundation. This would give us the ability to find expected values of prices and implement and arbitrage strategy. 
+
+  
