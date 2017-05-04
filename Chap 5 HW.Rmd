@@ -1,0 +1,209 @@
+### Chapter 5 Homework 
+
+##### Nick Lyle
+--
+
+5.1
+
+ Description  |  Payment  |  Change Ownership  |  Payment Amount
+ ------------ | --------- | ------------------ | ---------------
+ Outright Sale | 0		 | 0				    | $S_0$ at time 0
+ Loan Sale & Security Sale| T | 0| $S_0$$e^{rT}$ at time T
+  Prepaid Forward | 0 | T | ?
+  Forward | T | T | ? x $e^{rT}$
+  
+5.2 
+
+a) The Equation we use for this problem is:
+$$
+F_{0,T}^{P} = S_{0} - \sum_{i=1}^{n} e^{r(T-t_i)}D_{ti} 
+$$
+$$
+F_{0,T}^{P} = 50 - .985 - .970 - .956 - .942 = 46.147
+$$
+$$
+F_{0,T}^{P} = $46.147
+$$
+
+b) Take the prepaid price and find the future value using a 6% interest rate 
+
+$$
+F_{0,T} = F_{0,T}^{P}e^{rT}
+$$
+$$
+F_{0,T} = 46.147e^{.06 x 1}
+$$
+$$
+F_{0,T} = $49.00
+$$
+
+5.3
+
+a) The equation to use is:
+$$
+F_{0,T}^{P} = S_{0}e^{-rT}
+$$
+$$
+F_{0,T}^{P} = 50e^{-.08 x 1}
+$$
+$$
+F_{0,T}^{P} = 46.1558
+$$
+
+b) Same thing as 5.1b:
+
+$$
+F_{0,T} = F_{0,T}^{P}e^{rT}
+$$
+$$
+F_{0,T} = 46.1558e^{.06 x 1}
+$$
+$$
+F_{0,T} = 49.01
+$$
+
+5.4
+
+a) 
+$$
+F_{0,T} = S_{0}e^{rT} 
+$$
+$$
+F_{0,T} = 35e^{.05 x .5}
+$$
+$$
+F_{0,T} = 35.886
+$$
+
+b) The Equation for the forward premium is:
+$$
+\frac{ln\frac{F_{0,T}}{S_{0}}}{T}
+$$
+$$
+\frac{1}{.5}ln\frac{35.50}{35} = .0284
+$$
+
+c) divident yeild is equal to the interest rate minus the forward premium 
+$$
+\delta = .05 - .0284 
+$$
+$$
+\delta = .0216
+$$
+
+5.6
+
+a) We would use the continuous divident equation 
+
+$$
+F_{0,T} = S_{0}e^{(r-\delta)T}
+$$
+$$
+F_{0,T} = 1100e^{(.05-.015).75}
+$$
+$$
+F_{0,T} = 1129.26
+$$
+
+b) Sell the short position on the index and lend that money out. 
+
+c) borrow the money to buy the short position on the index. 
+
+5.7 
+
+a) using our pricing formula we get a market price of the forward to be 1127.85 so we would short the forward since it is over valued. We would make $7.15
+
+b) We would go long on the forward since it is under valued. We would make $12.85 
+
+5.8
+
+a) We price the forward at 1116.62. Since the market price is over valued we should short the forward. we would make 3.38
+
+b) if the market price is 1110 and our no arbitrage forward price is 1116.62. since the market price is undervalued we should go long on the forward. we would make 6.62
+
+5.9
+
+a) You could invest money in 1981 and then travel to 1982 and get the money 
+
+b) If many people had this option it would push interest rates down 
+
+c) It will not be possible as we just showed 
+
+5.11 
+
+a) 4 x 250 x 1200 = $1,200,000
+
+b) 1200000 x .1 = $120,000
+
+5.15 
+
+a) 
+
+$$
+800e^{.055} = 845.23
+$$
+
+$$
+800e^{.05} = 841.02
+$$
+
+b)
+
+$$ 
+(800 + 1)e^{.055} = 846.29
+$$
+
+$$
+(800 - 1)e^{.05} = 839.97
+$$
+
+c) 
+
+$$
+(800 + 3.4)e^{.055} = 848.82
+$$
+
+$$
+(800 - 3.4)e^{.05} = 837.44
+$$
+
+d)
+
+$$
+(800 + 3.4)e^{.055} + 2.4 = 851.22
+$$
+
+$$
+(800 - 3.4)e^{.05} - 2.4 = 835.04
+$$
+
+e)
+
+$$
+(800 x 1.003 + 800 x .003 + 1)e^{.055} = 851.36
+$$
+
+$$
+(800 x .997 - 800 x .003 - 1)e^{.05} = 834.92
+$$
+
+5.16
+
+a)
+
+$$
+875e^{.0475} = 917.57
+$$
+
+b)
+
+- Each future has a value of 218,750 (250 x 875).
+
+- To cover our 800,00 exposure we would need 3.65714 (800,000/218,750) future
+contracts
+
+- We must then adjust for beta of 1.1. We would need 4.023 (3.65714 x 1.1) futures to hedge against our 800,000 portfolio. 
+
+- We would earn the risk free rate over the next year. 
+
+
